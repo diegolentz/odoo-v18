@@ -1,0 +1,45 @@
+.o_tour_pointer_tip,
+.min-w-0.text-truncate,
+.o_tour_pointer_tip.position-absolute,
+.o_tour_pointer_tip::before,
+.o_tour_pointer_tip::after {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    border: 0 !important;
+    content: none !important;
+}
+
+.o_main_navbar .oe_topbar_name {
+    display: none !important;
+}
+
+.o_control_panel  {
+    width: 100%;
+    margin: 10px auto;
+}
+
+.o_control_panel_breadcrumbs_actions,
+.o_cp_action_menus {
+    display: none !important;
+}
+
+/* Ocultar el avatar (imagen/letra grande) dentro del panel desplegable del usuario */
+.popover .o_avatar_card div:first-child > img,
+.popover .o_avatar_card div:first-child > span,
+.popover .o_user_avatar {
+    display: none !important;
+}
+
+/* Opcional: Centrar o ajustar los textos y botones que quedan */
+.popover .o_avatar_card {
+    text-align: center;
+}
+
+
+.o_popover,.card-body, .o_avatar_card{
+    width: 200px;
+    
+}
