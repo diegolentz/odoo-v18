@@ -1,0 +1,33 @@
+/* header de las tablas */
+.custom_crm_red_headers thead th,
+.custom_crm_red_headers thead th *,
+.o_list_renderer.custom_crm_red_headers thead th,
+.o_list_renderer.custom_crm_red_headers thead th *,
+.o_list_renderer .o_list_table.custom_crm_red_headers thead th,
+.o_list_renderer .o_list_table.custom_crm_red_headers thead th * {
+    color: #652eca !important;
+    font-size: 18px !important;
+}
+
+.custom_crm_red_headers tfoot td,
+.custom_crm_red_headers .o_list_number,
+.o_list_renderer.custom_crm_red_headers tfoot td,
+.o_list_renderer.custom_crm_red_headers .o_list_number,
+.o_list_renderer .o_list_table.custom_crm_red_headers tfoot td,
+.o_list_renderer .o_list_table.custom_crm_red_headers .o_list_number {
+    color: #c1121f !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    font-style: oblique !important;
+}
+
+/* Oculta el boton Generate Leads del control panel */
+.o_control_panel .o_button_generate_leads {
+    display: none !important;
+}
+
+/* Oculta breadcrumb "Crm" y su accion (engranaje) en el control panel */
+.o_breadcrumb.d-flex.gap-1.text-truncate,
+.o_control_panel_breadcrumbs_actions {
+    display: none !important;
+}

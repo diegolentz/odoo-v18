@@ -1,0 +1,10 @@
+<odoo>
+<!-- agregar css dinamico mediante assets -->
+    <record id="custom_crm_backend_css_asset" model="ir.asset">
+        <field name="name">Custom CRM Backend CSS</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="directive">append</field>
+        <field name="path">custom_crm/static/src/css/custom_crm_backend.css</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

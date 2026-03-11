@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_crm_case_opportunities_filter_inherit" model="ir.ui.view">
+        <field name="name">crm.view.crm.case.opportunities.filter.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+
+            <!-- Eliminar filtros/campos en la búsqueda de oportunidades -->
+            <xpath expr="//filter[@name='unassigned']" position="replace"/>
+            <xpath expr="//field[@name='activity_state']" position="replace"/>
+            <xpath expr="//filter[@name='open_opportunities']" position="replace"/>
+            <xpath expr="//filter[@name='filter_won']" position="replace"/>
+            <xpath expr="//filter[@name='filter_ongoing']" position="replace"/>
+            <xpath expr="//filter[@name='filter_lost']" position="replace"/>
+
+            <xpath expr="//filter[@name='saleschannel']" position="replace"/>
+            <xpath expr="//filter[@name='lostreason']" position="replace"/>
+            <xpath expr="//filter[@name='company']" position="replace"/>
+            <xpath expr="//filter[@name='compaign']" position="replace"/>
+            <xpath expr="//filter[@name='medium']" position="replace"/>
+            <xpath expr="//filter[@name='date_deadline']" position="replace"/>
+            <xpath expr="//filter[@name='group_by_lead_properties']" position="replace"/>
+                      
+        </field>
+    </record>
+
+</odoo>

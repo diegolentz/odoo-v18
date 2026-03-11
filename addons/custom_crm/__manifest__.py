@@ -23,8 +23,14 @@ Long description of module's purpose
     # always loaded
         'data': [
             # 'security/ir.model.access.csv',
+            'data/crm_stage_data.xml',
+            'views/assets.xml',
             'views/actions_views.xml',
+            'views/list_view.xml',
+            'views/kanban_view.xml',
+            'views/filter.xml',
         ],
+
       
     # only loaded in demonstration mode
     'demo': [

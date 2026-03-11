@@ -1,21 +1,14 @@
 <odoo>
-    <!-- custom kanban view -->
-    <record id="custom_card_view" model="ir.ui.view">
-        <field name="name">custom.crm.lead.card</field>
+    <record id="custom_kanban_disable_create" model="ir.ui.view">
+        <field name="name">custom.crm.lead.kanban.disable.create</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
         <field name="arch" type="xml">
-            
-            <!-- Quitar field de activities -->
-            <xpath expr="//kanban//footer//field[@name='activity_ids']" position="replace"/>
-
-            <!-- Agregar imagen del contacto debajo del nombre/partner -->
-            <xpath expr="//field[@name='partner_id']" position="after">
-                <div t-if="record.partner_id.raw_value" class="mt-2 d-flex justify-content-center">
-                    <i class="fa fa-smile-o" style="margin-left: 8px; font-size: 40px; color: #14b129;"/>
-                </div>
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="create">false</attribute>
+                <attribute name="quick_create">false</attribute>
+                <attribute name="on_create"/>
             </xpath>
-
         </field>
     </record>
 </odoo>

@@ -1,0 +1,34 @@
+<odoo>
+    <record id="crm.stage_lead1" model="crm.stage">
+        <field name="name">Nuevo</field>
+        <field name="sequence">1</field>
+        <field name="fold" eval="False"/>
+    </record>
+
+    <record id="crm.stage_lead2" model="crm.stage">
+        <field name="name">Qualified</field>
+        <field name="sequence">2</field>
+        <field name="fold" eval="False"/>
+    </record>
+
+    <record id="crm.stage_lead3" model="crm.stage">
+        <field name="name">Proposition</field>
+        <field name="sequence">3</field>
+        <field name="fold" eval="False"/>
+    </record>
+
+    <record id="crm.stage_lead4" model="crm.stage">
+        <field name="fold" eval="True"/>
+    </record>
+
+    <function model="crm.stage" name="write">
+        <value model="crm.stage" search="[('is_won', '=', True)]"/>
+        <value eval="{'fold': True}"/>
+    </function>
+
+    <record id="custom_stage_diegostage" model="crm.stage">
+        <field name="name">diegostage</field>
+        <field name="sequence">999</field>
+        <field name="fold" eval="False"/>
+    </record>
+</odoo>

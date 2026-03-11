@@ -1,7 +1,26 @@
 <odoo>
-<record id="crm.crm_lead_action_pipeline" model="ir.actions.act_window">
-    <field name="view_mode">list,kanban</field>
-    <!-- <field name="view_ids" eval="[(5, 0, 0)]"/> -->
-    <field name="view_id" eval="False"/>
-</record>
+    <record id="crm.crm_lead_action_pipeline" model="ir.actions.act_window">
+        <field name="view_mode">list,kanban</field>
+        
+        <!-- eval 5,0,0 desvincula las vistas, despues carga las del viewmode -->
+        <field name="view_ids" eval="[(5, 0, 0)]"/>
+        
+        <field name="view_id" eval="False"/>
+    </record>
+<!-- 
+    mas personalizado, pero no lo prove 
+    <record id="my_action_list_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="TU_VISTA_LIST"/>
+        <field name="act_window_id" ref="crm.crm_lead_action_pipeline"/>
+    </record>
+
+    <record id="my_action_kanban_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="TU_VISTA_KANBAN"/>
+        <field name="act_window_id" ref="crm.crm_lead_action_pipeline"/>
+    </record> 
+-->
 </odoo>
