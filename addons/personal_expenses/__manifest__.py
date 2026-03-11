@@ -24,8 +24,6 @@ Module to manage personal expenses
 
     'assets': {
         'web.assets_backend': [
-            'personal_expenses/static/src/xml/custom_navbar.xml',
-            'personal_expenses/static/src/css/navbar_hide.css',
             
         ],
     },
