@@ -6,20 +6,20 @@
         <field name="arch" type="xml">
 
             <!-- Eliminar filtros/campos en la búsqueda de oportunidades -->
-            <xpath expr="//search//filter[@name='unassigned']" position="replace"/>
-            <xpath expr="//search//field[@name='activity_state']" position="replace"/>
-            <xpath expr="//search//filter[@name='open_opportunities']" position="replace"/>
-            <xpath expr="//search//filter[@name='filter_won']" position="replace"/>
-            <xpath expr="//search//filter[@name='filter_ongoing']" position="replace"/>
-            <xpath expr="//search//filter[@name='filter_lost']" position="replace"/>
+            <xpath expr="//filter[@name='unassigned']" position="replace"/>
+            <xpath expr="//field[@name='activity_state']" position="replace"/>
+            <xpath expr="//filter[@name='open_opportunities']" position="replace"/>
+            <xpath expr="//filter[@name='filter_won']" position="replace"/>
+            <xpath expr="//filter[@name='filter_ongoing']" position="replace"/>
+            <xpath expr="//filter[@name='filter_lost']" position="replace"/>
 
-            <xpath expr="//search//group//filter[@name='saleschannel']" position="replace"/>
-            <xpath expr="//search//group//filter[@name='lostreason']" position="replace"/>
-            <xpath expr="//search//group//filter[@name='company']" position="replace"/>
-            <xpath expr="//search//group//filter[@name='compaign']" position="replace"/>
-            <xpath expr="//search//group//filter[@name='medium']" position="replace"/>
-            <xpath expr="//search//group//filter[@name='date_deadline']" position="replace"/>
-            <xpath expr="//search//group//filter[@name='group_by_lead_properties']" position="replace"/>
+            <xpath expr="//filter[@name='saleschannel']" position="replace"/>
+            <xpath expr="//filter[@name='lostreason']" position="replace"/>
+            <xpath expr="//filter[@name='company']" position="replace"/>
+            <xpath expr="//filter[@name='compaign']" position="replace"/>
+            <xpath expr="//filter[@name='medium']" position="replace"/>
+            <xpath expr="//filter[@name='date_deadline']" position="replace"/>
+            <xpath expr="//filter[@name='group_by_lead_properties']" position="replace"/>
                       
         </field>
     </record>

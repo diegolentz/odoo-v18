@@ -1,0 +1,80 @@
+/* 1) Ocultaciones UI */
+.o_main_navbar .o-mail-ActivityMenu,
+.o_main_navbar .o_ActivityMenu,
+.o_main_navbar .fa-clock-o[aria-label="Activities"],
+.o_main_navbar .o-mail-ActivityMenu-counter,
+.o_main_navbar .oe_topbar_name,
+.o_control_panel .o_control_panel_breadcrumbs_actions,
+.o_control_panel .o_cp_action_menus,
+.o_control_panel button[data-tooltip="Actions"] {
+    display: none !important;
+}
+
+/* 2) Encabezados visibles y en negro */
+.o_list_renderer .o_list_table thead th,
+.o_list_renderer .o_list_table thead th > div,
+.o_list_renderer .o_list_table thead th span,
+.o_list_renderer .o_list_table thead th .o_list_sortable_caret {
+    color: #000 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.o_list_renderer .o_list_table thead th {
+    font-size: 14px !important;
+    /* font-weight: 700 !important; */
+    text-indent: 0 !important;
+}
+
+/* 3) Tabla con anchos equitativos */
+.o_list_view .o_list_table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.o_list_view .o_list_table th.o_list_record_selector,
+.o_list_view .o_list_table td.o_list_record_selector {
+    width: 40px !important;
+}
+
+.o_list_view .o_list_table th[data-name="date"],
+.o_list_view .o_list_table td[name="date"],
+.o_list_view .o_list_table th[data-name="name"],
+.o_list_view .o_list_table td[name="name"],
+.o_list_view .o_list_table th[data-name="amount"],
+.o_list_view .o_list_table td[name="amount"],
+.o_list_view .o_list_table th[data-name="category_id"],
+.o_list_view .o_list_table td[name="category_id"],
+.o_list_view .o_list_table th.o_list_button,
+.o_list_view .o_list_table td.o_list_button {
+    width: 20% !important;
+}
+
+/* 4) Alineacion: datos izquierda, acciones centradas */
+.o_list_view .o_list_table th[data-name="date"],
+.o_list_view .o_list_table td[name="date"],
+.o_list_view .o_list_table th[data-name="name"],
+.o_list_view .o_list_table td[name="name"],
+.o_list_view .o_list_table th[data-name="amount"],
+.o_list_view .o_list_table td[name="amount"],
+.o_list_view .o_list_table th[data-name="category_id"],
+.o_list_view .o_list_table td[name="category_id"],
+.o_list_view .o_list_table td.o_list_number,
+.o_list_view .o_list_table th[data-name="amount"] .o_list_number_th,
+.o_list_view .o_list_table td[name="amount"] .o_list_number {
+    text-align: left !important;
+}
+
+.o_list_view .o_list_table th[data-name="date"] > div,
+.o_list_view .o_list_table th[data-name="name"] > div,
+.o_list_view .o_list_table th[data-name="amount"] > div,
+.o_list_view .o_list_table th[data-name="category_id"] > div {
+    justify-content: flex-start !important;
+}
+
+.o_list_view .o_list_table th.o_list_button,
+.o_list_view .o_list_table td.o_list_button {
+    text-align: center !important;
+}
+
+
