@@ -1,0 +1,54 @@
+<odoo>
+    <data>
+    <!-- Heredamos la vista de form de oportunidades -->
+        <record id="view_crm_lead_form" model="ir.ui.view">
+            <field name="name">view.crm.lead.form</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                
+                <xpath expr="//field[@name='user_id']" position="before">
+                    <group>
+                        <field name="tipo_servicio"/>
+                        <field name="contact_name"/>
+                        <field name="celular"/>
+                        <div>
+                            <button name="mobile_whatsapp_link" string="Contactar" type="object" class="oe_stat_button" icon="fa-whatsapp"/>
+                        </div>
+                        <div>
+                            <button name="cel_wpp_cobro" string="Cobro" type="object" class="oe_stat_button" icon="fa-whatsapp"/>
+                        </div>
+                        <field name="direccion"/>
+                        <field name="entrecalle"/>
+                        <field name="barrio"/>
+                        <field name="metodo_pago"/>
+                        <field name="pago_realizado"/>
+                        <field name="fecha_entrega"/>
+                        <field name="fecha_retiro"/>
+                        <field name="se_retiro"/>
+                        <field name="detalles"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    <!-- Heredamos la vista de lista de oportunidades -->
+        <record id="view_crm_lead_tree_custom" model="ir.ui.view">
+            <field name="name">crm.lead.tree.custom</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='phone']" position="after">
+                    <field name="fecha_entrega"/>
+                    <field name="direccion"/>
+                    <field name="metodo_pago"/>
+                    <field name="pago_realizado"/>
+                    <field name="celular"/>
+                    <button name="mobile_whatsapp_link" string="Contactar" type="object" class="oe_stat_button" icon="fa-whatsapp"/>
+                    <button name="cel_wpp_cobro" string="Cobro" type="object" class="oe_stat_button" icon="fa-whatsapp"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
