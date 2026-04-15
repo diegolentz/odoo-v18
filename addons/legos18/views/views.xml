@@ -9,6 +9,7 @@
                 <xpath expr="//group[@name='opportunity_partner']" position="before">
                     <field name="priority_custom" widget="priority" invisible="type == 'lead'"/>
                 </xpath>
+       
                 
                 <xpath expr="//field[@name='user_id']" position="before">
                     <field name="contact_name"/>
@@ -25,6 +26,7 @@
                     <field name="tipo_accidente"/>
                     <field name="fractura"/>
                     <field name="observaciones"/>
+                    <field name="prestadora"/>
                     <field name="tipo_lesion"/>
                     <field name="junta_medica"/>
                     <field name="audiencia_medica"/>

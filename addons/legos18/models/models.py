@@ -73,6 +73,8 @@ class CustomCrmLeads(models.Model):
             ('3', 'Grave'), 
         ], string='Prioridad', related='priority', store=True, readonly=False, tracking=True )
 
+    prestadora = fields.Char(string='Prestadora', tracking=True)
+
     _sql_constraints = [
         ('phone_unique', 'unique(phone)', 'El número ingresado ya existe, verifique el campo Teléfono')
     ]
