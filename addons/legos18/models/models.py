@@ -50,6 +50,29 @@ class CustomCrmLeads(models.Model):
     celular_secundario = fields.Char(string='Celular Secundario', tracking=True)
     celular_alternativo = fields.Char(string='Celular Alternativo', tracking=True)
 
+    # redefino campos base para poder trackerarlos
+    name = fields.Char(tracking=True)                                   # Nombre del lead/oportunidad
+    partner_id = fields.Many2one('res.partner', tracking=True)          # Contacto
+    contact_name = fields.Char(tracking=True)                           # Nombre contacto
+    email_from = fields.Char(tracking=True)                             # Email
+    phone = fields.Char(tracking=True)                                  # Teléfono
+    mobile = fields.Char(tracking=True)                                 # Móvil
+    stage_id = fields.Many2one('crm.stage', tracking=True)              # Etapa (statusbar)
+    user_id = fields.Many2one('res.users', tracking=True)               # Responsable
+    team_id = fields.Many2one('crm.team', tracking=True)                # Equipo de ventas
+    tag_ids = fields.Many2many('crm.tag', tracking=True)                # Etiquetas
+    expected_revenue = fields.Monetary(tracking=True)                   # Ingreso esperado
+    probability = fields.Float(tracking=True)                           # Probabilidad
+    date_deadline = fields.Date(tracking=True)                          # Fecha cierre esperada
+    lost_reason_id = fields.Many2one('crm.lost.reason', tracking=True)  # Razón pérdida
+    description = fields.Html(tracking=True)  
+    priority = fields.Selection([
+        # ('0', 'Ninguna'),
+        ('1', 'Leve'),
+        ('2', 'Media'),
+        ('3', 'Grave'),
+    ], string='Prioridad', tracking=True, default='0')                   # prioridad que asigna el usuario
+
     _sql_constraints = [
         ('phone_unique', 'unique(phone)', 'El número ingresado ya existe, verifique el campo Teléfono')
     ]
@@ -95,9 +118,9 @@ class CustomCrmLeads(models.Model):
     @api.depends('junta_medica')
     def _compute_prioridad(self):
         for record in self:
-            if record.junta_medica < 80000000:
+            if record.junta_medica < 30000000:
                 record.prioridad_estimada = '1'
-            elif record.junta_medica < 30000000:
+            elif record.junta_medica < 80000000:
                 record.prioridad_estimada = '2'
             else:
                 record.prioridad_estimada = '3'
