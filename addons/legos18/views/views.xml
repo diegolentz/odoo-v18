@@ -1,0 +1,37 @@
+<odoo>
+    <data>
+        <record id="view_crm_lead_form_custom" model="ir.ui.view">
+            <field name="name">crm.lead.form.custom</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                
+                <xpath expr="//field[@name='user_id']" position="before">
+                    <field name="contact_name"/>
+                    <field name="celular"/>
+                    <button name="cel_wpp_calc" string="Contactar" type="object" class="oe_stat_button" icon="fa-whatsapp"/>
+                    <button name="mobile_whatsapp_consulta" type="object" class="oe_stat_button" icon="fa-whatsapp"/>
+                    <field name="celular_secundario"/>
+                    <field name="edad"/>
+                    <field name="grado_lesion"/>
+                    <field name="ingreso_base"/>
+                    <field name="ingreso_bruto"/>
+                    <field name="fuero"/>
+                    <field name="fecha_accidente"/>
+                    <field name="tipo_accidente"/>
+                    <field name="fractura"/>
+                    <field name="observaciones"/>
+                    <field name="tipo_lesion"/>
+                    <field name="junta_medica"/>
+                    <field name="audiencia_medica"/>
+                    <field name="instancia_judicial"/>
+                    <field name="prioridad_estimada" widget="priority"/>
+                    <field name="coeficiente_actualizacion"/>
+                    <field name="celular_alternativo"/>
+                    <field name="telefono_secundario"/>
+                    <field name="telefono_alternativo"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
