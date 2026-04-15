@@ -24,3 +24,15 @@ documentación odoo
 https://www.odoo.com/documentation/18.0/es_419/index.html
 
 
+
+
+
+
+
+docker compose exec odoo odoo -u legos18 -d odoo --stop-after-init
+
+
+cambio de labels
+docker compose exec odoo odoo -u legos18 -d odoo --stop-after-init 2>&1 | Select-String "legos18|ERROR"
+
+

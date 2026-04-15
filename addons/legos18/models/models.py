@@ -67,7 +67,7 @@ class CustomCrmLeads(models.Model):
     lost_reason_id = fields.Many2one('crm.lost.reason', tracking=True)  # Razón pérdida
     description = fields.Html(tracking=True)  
     priority = fields.Selection([
-        # ('0', 'Ninguna'),
+        ('0', 'Ninguna'),
         ('1', 'Leve'),
         ('2', 'Media'),
         ('3', 'Grave'),
