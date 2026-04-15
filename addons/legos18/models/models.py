@@ -28,10 +28,10 @@ class CustomCrmLeads(models.Model):
     instancia_judicial = fields.Float(compute="_compute_instancia_judicial", store=True, tracking=True)
 
     prioridad_estimada = fields.Selection([
-        ('0', 'Sin Asignar'),
-        ('1', 'Baja'),
+        ('0', 'Ninguna'),
+        ('1', 'Leve'),
         ('2', 'Media'),
-        ('3', 'Alta')
+        ('3', 'Grave'),
     ], compute="_compute_prioridad", store=True, tracking=True)
 
     number_dots = fields.Text(compute='_compute_number_dots', tracking=True)
@@ -66,16 +66,18 @@ class CustomCrmLeads(models.Model):
     date_deadline = fields.Date(tracking=True)                          # Fecha cierre esperada
     lost_reason_id = fields.Many2one('crm.lost.reason', tracking=True)  # Razón pérdida
     description = fields.Html(tracking=True)  
-    priority_custom = fields.Selection([
-        ('0', 'Ninguna'),
-        ('1', 'Leve'),
-        ('2', 'Media'),
-        ('3', 'Grave'),
-    ], string='Prioridad', tracking=True, default='0')                   # prioridad que asigna el usuario
+    priority_custom = fields.Selection( [ 
+            ('0', 'Ninguna'), 
+            ('1', 'Leve'), 
+            ('2', 'Media'), 
+            ('3', 'Grave'), 
+        ], string='Prioridad', related='priority', store=True, readonly=False, tracking=True )
 
     _sql_constraints = [
         ('phone_unique', 'unique(phone)', 'El número ingresado ya existe, verifique el campo Teléfono')
     ]
+
+
 
     @api.depends('ingreso_base', 'coeficiente_actualizacion')
     def _compute_salario_actualizado(self):
