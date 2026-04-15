@@ -66,7 +66,7 @@ class CustomCrmLeads(models.Model):
     date_deadline = fields.Date(tracking=True)                          # Fecha cierre esperada
     lost_reason_id = fields.Many2one('crm.lost.reason', tracking=True)  # Razón pérdida
     description = fields.Html(tracking=True)  
-    priority = fields.Selection([
+    priority_custom = fields.Selection([
         ('0', 'Ninguna'),
         ('1', 'Leve'),
         ('2', 'Media'),

@@ -5,6 +5,10 @@
             <field name="model">crm.lead</field>
             <field name="inherit_id" ref="crm.crm_lead_view_form"/>
             <field name="arch" type="xml">
+
+                <xpath expr="//group[@name='opportunity_partner']" position="before">
+                    <field name="priority_custom" widget="priority" invisible="type == 'lead'"/>
+                </xpath>
                 
                 <xpath expr="//field[@name='user_id']" position="before">
                     <field name="contact_name"/>
@@ -32,21 +36,8 @@
                     <field name="telefono_alternativo"/>
                 </xpath>
 
-                <!-- Eliminar priority de su ubicación original en oportunidades (cerca de date_deadline) -->
-                <xpath expr="//div[contains(@class,'o_lead_opportunity_form_inline_fields')]/field[@name='priority']" position="replace"/>
+                <xpath expr="//div[@class='o_lead_opportunity_form_inline_fields']/field[@name='priority']" position="replace"/>
 
-                <!-- Eliminar priority de su ubicación original en leads (lead_priority group) -->
-                <xpath expr="//group[@name='lead_priority']/field[@name='priority']" position="replace"/>
-
-                <!-- Agregar priority antes del bloque de contacto (oportunidades) -->
-                <xpath expr="//group[@name='opportunity_partner']" position="before">
-                    <field name="priority" widget="priority" invisible="type == 'lead'"/>
-                </xpath>
-
-                <!-- Agregar priority antes del bloque de contacto (leads) -->
-                <xpath expr="//group[@name='lead_partner']" position="before">
-                    <field name="priority" widget="priority" invisible="type == 'opportunity'"/>
-                </xpath>
             </field>
         </record>
     </data>
