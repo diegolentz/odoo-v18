@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
+import requests
 
 class CustomCrmLeads(models.Model):
     _inherit = 'crm.lead'
@@ -30,7 +31,7 @@ class CustomCrmLeads(models.Model):
     prioridad_estimada = fields.Selection([
         ('0', 'Ninguna'),
         ('1', 'Leve'),
-        ('2', 'Media'),
+        ('2', 'Medio'),
         ('3', 'Grave'),
     ], compute="_compute_prioridad", store=True, tracking=True)
 
@@ -66,12 +67,16 @@ class CustomCrmLeads(models.Model):
     date_deadline = fields.Date(tracking=True)                          # Fecha cierre esperada
     lost_reason_id = fields.Many2one('crm.lost.reason', tracking=True)  # Razón pérdida
     description = fields.Html(tracking=True)  
-    priority_custom = fields.Selection( [ 
-            ('0', 'Ninguna'), 
-            ('1', 'Leve'), 
-            ('2', 'Media'), 
-            ('3', 'Grave'), 
-        ], string='Prioridad', related='priority', store=True, readonly=False, tracking=True )
+    priority_custom = fields.Selection(
+        [('0', 'Ninguna'), ('1', 'Leve'), ('2', 'Medio'), ('3', 'Grave')],
+        string='Prioridad',
+        compute='_compute_priority_custom',
+        inverse='_inverse_priority_custom',
+        store=True,
+        readonly=False,
+        tracking=True,
+        default='0',
+    )
 
     prestadora = fields.Char(string='Prestadora', tracking=True)
 
@@ -79,7 +84,22 @@ class CustomCrmLeads(models.Model):
         ('phone_unique', 'unique(phone)', 'El número ingresado ya existe, verifique el campo Teléfono')
     ]
 
+    @api.depends('priority')
+    def _compute_priority_custom(self):
+        for record in self:
+            record.priority_custom = record.priority or '0'
 
+    def _inverse_priority_custom(self):
+        for record in self:
+            record.priority = record.priority_custom or '0'
+
+    @api.onchange('priority')
+    def _onchange_priority(self):
+        self.priority_custom = self.priority or '0'
+
+    @api.onchange('priority_custom')
+    def _onchange_priority_custom(self):
+        self.priority = self.priority_custom or '0'
 
     @api.depends('ingreso_base', 'coeficiente_actualizacion')
     def _compute_salario_actualizado(self):
@@ -167,3 +187,57 @@ class CustomCrmLeads(models.Model):
             f"Hola {self.contact_name.replace(' ', '%20')}, ¿Cómo estás?"
         )
         return self._generate_whatsapp_url(self.celular, message)
+
+
+    # Heredo del create, asi disparo trigger a n8n
+    # def create(self, vals):
+    #     lead = super().create(vals)
+    #     try:
+    #         requests.post("https://n8nlegasesor.apps.confortm.com/webhook-test/2e311742-2db6-47ec-81e4-d8692db9e13a", json = {
+    #             "id": lead.id,
+    #             "name": lead.name,
+    #             "contact_name": lead.contact_name,
+    #             "celular": lead.celular,
+    #             "email_from": lead.email_from,
+    #             "phone": lead.phone,
+    #             "mobile": lead.mobile,
+    #             "stage_id": lead.stage_id.id if lead.stage_id else None,
+    #             "user_id": lead.user_id.id if lead.user_id else None,
+    #             "team_id": lead.team_id.id if lead.team_id else None,
+    #             "tag_ids": [tag.id for tag in lead.tag_ids],
+    #             "expected_revenue": lead.expected_revenue,
+    #             "probability": lead.probability,
+    #             "date_deadline": str(lead.date_deadline) if lead.date_deadline else None,
+    #             "lost_reason_id": lead.lost_reason_id.id if lead.lost_reason_id else None
+    #         }, timeout=5)
+    #     except Exception as e:
+    #         print(f"Error al enviar datos a n8n: {e}")
+    #     return lead
+    def contactarNuevos_n8n(self):
+        # Test 1: llega hasta acá?
+        requests.post(
+            "https://n8nlegasesor.apps.confortm.com/webhook/2e311742-2db6-47ec-81e4-d8692db9e13a",
+            json={"paso": 1},
+            timeout=5
+        )
+        
+        stageNuevo = self.env['crm.stage'].search([('name', '=', 'Nuevo')], limit=1)
+        
+        # Test 2: encontró la etapa?
+        requests.post(
+            "https://n8nlegasesor.apps.confortm.com/webhook/2e311742-2db6-47ec-81e4-d8692db9e13a",
+            json={"paso": 2, "stage_id": stageNuevo.id if stageNuevo else None},
+            timeout=5
+        )
+        
+        if not stageNuevo:
+            return
+        
+        leadsNuevos = self.env['crm.lead'].search([('stage_id', '=', stageNuevo.id)])
+        
+        # Test 3: encontró leads?
+        requests.post(
+            "https://n8nlegasesor.apps.confortm.com/webhook/2e311742-2db6-47ec-81e4-d8692db9e13a",
+            json={"paso": 3, "cantidad_leads": len(leadsNuevos)},
+            timeout=5
+        )
