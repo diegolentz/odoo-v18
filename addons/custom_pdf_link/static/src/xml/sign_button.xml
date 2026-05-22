@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-inherit="mail.AttachmentList" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o-mail-AttachmentCard-aside')]" position="inside">
+            <button t-if="attachment.mimetype === 'application/pdf'"
+                class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0"
+                t-attf-class="bg-300"
+                title="Generar link de firma"
+                t-on-click.stop="() => this.onClickGenerateSignLink(attachment)">
+                <i class="fa fa-share-alt" role="img" aria-label="Generar link de firma"/>
+            </button>
+        </xpath>
+    </t>
+</templates>

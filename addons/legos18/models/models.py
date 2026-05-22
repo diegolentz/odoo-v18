@@ -137,7 +137,7 @@ class CustomCrmLeads(models.Model):
     @api.depends('junta_medica')
     def _compute_number_dots(self):
         for record in self:
-            record.number_dots = "{:,}".format(int(record.junta_medica)) if record.junta_medica else "0"
+            record.number_dots = "{:,}".format(int(record.junta_medica or 0)) if record.junta_medica else "0"
 
     @api.depends('junta_medica')
     def _compute_prioridad(self):
@@ -152,14 +152,14 @@ class CustomCrmLeads(models.Model):
     def _generate_whatsapp_url(self, phone, message):
         return {
             'type': 'ir.actions.act_url',
-            'url': f"https://wa.me/549{phone.replace(' ', '').replace('-', '')}?text={message}",
+            'url': f"https://wa.me/549{(phone or '').replace(' ', '').replace('-', '')}?text={message}",
             'target': 'new',
             'res_id': self.id,
         }
 
     def mobile_whatsapp_calc(self):
         message = (
-            f"Hola {self.contact_name.replace(' ', '%20')}, "
+            f"Hola {(self.contact_name or '').replace(' ', '%20')}, "
             f"me comunico de legasesor.com por una consulta que recibimos respecto a tu indemnización. "
             f"Según los datos ingresados daría ${self.number_dots} "
             f"¿Tuviste el alta ya?"
@@ -168,7 +168,7 @@ class CustomCrmLeads(models.Model):
 
     def cel_wpp_calc(self):
         message = (
-            f"Hola {self.contact_name.replace(' ', '%20')}, "
+            f"Hola {(self.contact_name or '').replace(' ', '%20')}, "
             f"me comunico de legasesor.com por tu consulta respecto a un accidente. "
             "¿Iniciaste el reclamo correspondiente?"
         )
@@ -176,7 +176,7 @@ class CustomCrmLeads(models.Model):
 
     def mobile_whatsapp_link(self):
         message = (
-            f"Hola {self.contact_name.replace(' ', '%20')}, ¿Cómo estás? "
+            f"Hola {(self.contact_name or '').replace(' ', '%20')}, ¿Cómo estás? "
             "Me comunico de legasesor.com por tu consulta, "
             "¿Tenés alguna duda respecto al reclamo a realizar?"
         )
@@ -184,60 +184,45 @@ class CustomCrmLeads(models.Model):
 
     def mobile_whatsapp_consulta(self):
         message = (
-            f"Hola {self.contact_name.replace(' ', '%20')}, ¿Cómo estás?"
+            f"Hola {(self.contact_name or '').replace(' ', '%20')}, ¿Cómo estás?"
         )
         return self._generate_whatsapp_url(self.celular, message)
 
 
-    # Heredo del create, asi disparo trigger a n8n
-    # def create(self, vals):
-    #     lead = super().create(vals)
-    #     try:
-    #         requests.post("https://n8nlegasesor.apps.confortm.com/webhook-test/2e311742-2db6-47ec-81e4-d8692db9e13a", json = {
-    #             "id": lead.id,
-    #             "name": lead.name,
-    #             "contact_name": lead.contact_name,
-    #             "celular": lead.celular,
-    #             "email_from": lead.email_from,
-    #             "phone": lead.phone,
-    #             "mobile": lead.mobile,
-    #             "stage_id": lead.stage_id.id if lead.stage_id else None,
-    #             "user_id": lead.user_id.id if lead.user_id else None,
-    #             "team_id": lead.team_id.id if lead.team_id else None,
-    #             "tag_ids": [tag.id for tag in lead.tag_ids],
-    #             "expected_revenue": lead.expected_revenue,
-    #             "probability": lead.probability,
-    #             "date_deadline": str(lead.date_deadline) if lead.date_deadline else None,
-    #             "lost_reason_id": lead.lost_reason_id.id if lead.lost_reason_id else None
-    #         }, timeout=5)
-    #     except Exception as e:
-    #         print(f"Error al enviar datos a n8n: {e}")
-    #     return lead
     def contactarNuevos_n8n(self):
-        # Test 1: llega hasta acá?
-        requests.post(
-            "https://n8nlegasesor.apps.confortm.com/webhook/2e311742-2db6-47ec-81e4-d8692db9e13a",
-            json={"paso": 1},
-            timeout=5
-        )
-        
-        stageNuevo = self.env['crm.stage'].search([('name', '=', 'Nuevo')], limit=1)
-        
-        # Test 2: encontró la etapa?
-        requests.post(
-            "https://n8nlegasesor.apps.confortm.com/webhook/2e311742-2db6-47ec-81e4-d8692db9e13a",
-            json={"paso": 2, "stage_id": stageNuevo.id if stageNuevo else None},
-            timeout=5
-        )
-        
+        stageNuevo = self.env['crm.stage'].search([('name', '=', 'New')], limit=1)
         if not stageNuevo:
             return
         
         leadsNuevos = self.env['crm.lead'].search([('stage_id', '=', stageNuevo.id)])
+        if not leadsNuevos:
+            return
         
-        # Test 3: encontró leads?
-        requests.post(
-            "https://n8nlegasesor.apps.confortm.com/webhook/2e311742-2db6-47ec-81e4-d8692db9e13a",
-            json={"paso": 3, "cantidad_leads": len(leadsNuevos)},
-            timeout=5
-        )
+        enviarN8N = []
+        for lead in leadsNuevos:
+            enviarN8N.append({
+                "id": lead.id,
+                "name": lead.name,
+                "contact_name": lead.contact_name,
+                "celular": lead.celular,
+                "email_from": lead.email_from,
+                "phone": lead.phone,
+                "mobile": lead.mobile,
+                "stage_id": lead.stage_id.id if lead.stage_id else None,
+                "user_id": lead.user_id.id if lead.user_id else None,
+                "team_id": lead.team_id.id if lead.team_id else None,
+                "tag_ids": [tag.id for tag in lead.tag_ids],
+                "expected_revenue": lead.expected_revenue,
+                "probability": lead.probability,
+                "date_deadline": str(lead.date_deadline) if lead.date_deadline else None,
+                "lost_reason_id": lead.lost_reason_id.id if lead.lost_reason_id else None
+            })
+        
+        try:
+            requests.post(
+                "https://n8nlegasesor.apps.confortm.com/webhook/2e311742-2db6-47ec-81e4-d8692db9e13a",
+                json=enviarN8N,
+                timeout=5
+            )
+        except Exception as e:
+            print(f"Error al enviar datos a n8n: {e}")
