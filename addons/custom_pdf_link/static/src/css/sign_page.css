@@ -1,0 +1,22 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f0f2f5; min-height: 100vh; }
+.header { background: #714b67; color: white; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+.header h1 { font-size: 18px; font-weight: 600; }
+.container { max-width: 860px; margin: 24px auto; padding: 0 16px 40px; }
+.card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden; }
+.card-title { background: #f8f9fa; padding: 14px 20px; font-weight: 600; color: #333; border-bottom: 1px solid #e0e0e0; font-size: 15px; }
+.pdf-frame { width: 100%; height: 520px; border: none; display: block; }
+.sign-area { padding: 20px; }
+.sign-label { font-size: 14px; color: #555; margin-bottom: 10px; }
+canvas { border: 2px dashed #714b67; border-radius: 8px; width: 100%; touch-action: none; display: block; background: #fafafa; }
+.btn-row { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+.btn { padding: 10px 22px; border-radius: 6px; border: none; cursor: pointer; font-size: 15px; font-weight: 600; transition: opacity .2s; }
+.btn:hover { opacity: 0.85; }
+.btn-clear { background: #e0e0e0; color: #333; }
+.btn-submit { background: #714b67; color: white; flex: 1; }
+.btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+.signed-box { padding: 40px 20px; text-align: center; }
+.signed-box .icon { font-size: 56px; }
+.signed-box h2 { color: #2e7d32; margin: 12px 0 8px; }
+.signed-box p { color: #555; }
+.already-signed { padding: 30px 20px; text-align: center; color: #888; }

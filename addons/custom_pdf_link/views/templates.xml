@@ -6,30 +6,7 @@
                     <meta charset="UTF-8"/>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                     <title>Firmar documento</title>
-                    <style>
-                        * { box-sizing: border-box; margin: 0; padding: 0; }
-                        body { font-family: Arial, sans-serif; background: #f0f2f5; min-height: 100vh; }
-                        .header { background: #714b67; color: white; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
-                        .header h1 { font-size: 18px; font-weight: 600; }
-                        .container { max-width: 860px; margin: 24px auto; padding: 0 16px 40px; }
-                        .card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden; }
-                        .card-title { background: #f8f9fa; padding: 14px 20px; font-weight: 600; color: #333; border-bottom: 1px solid #e0e0e0; font-size: 15px; }
-                        .pdf-frame { width: 100%; height: 520px; border: none; display: block; }
-                        .sign-area { padding: 20px; }
-                        .sign-label { font-size: 14px; color: #555; margin-bottom: 10px; }
-                        canvas { border: 2px dashed #714b67; border-radius: 8px; width: 100%; touch-action: none; display: block; background: #fafafa; }
-                        .btn-row { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
-                        .btn { padding: 10px 22px; border-radius: 6px; border: none; cursor: pointer; font-size: 15px; font-weight: 600; transition: opacity .2s; }
-                        .btn:hover { opacity: 0.85; }
-                        .btn-clear { background: #e0e0e0; color: #333; }
-                        .btn-submit { background: #714b67; color: white; flex: 1; }
-                        .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
-                        .signed-box { padding: 40px 20px; text-align: center; }
-                        .signed-box .icon { font-size: 56px; }
-                        .signed-box h2 { color: #2e7d32; margin: 12px 0 8px; }
-                        .signed-box p { color: #555; }
-                        .already-signed { padding: 30px 20px; text-align: center; color: #888; }
-                    </style>
+                    <link rel="stylesheet" href="/custom_pdf_link/static/src/css/sign_page.css"/>
                 </head>
                 <body>
                     <div class="header">
@@ -51,14 +28,25 @@
                                 <div class="card-title">📄 Documento a firmar: <t t-esc="sign_req.attachment_id.name"/></div>
                                 <iframe class="pdf-frame" t-att-src="pdf_url + '&amp;inline=true'"/>
                             </div>
-                            <div class="card">
+                            <div class="card" id="firmaCard">
                                 <div class="card-title">Tu firma</div>
                                 <div class="sign-area">
                                     <p class="sign-label">Dibujá tu firma en el recuadro de abajo con el dedo o el mouse:</p>
                                     <canvas id="signCanvas" height="200"/>
                                     <div class="btn-row">
-                                        <button class="btn btn-clear" onclick="clearSignature()">Limpiar</button>
-                                        <button class="btn btn-submit" id="btnSubmit" onclick="submitSignature()">✅ Confirmar firma</button>
+                                        <button class="btn btn-clear" onclick="clearFirma()">Limpiar</button>
+                                        <button class="btn btn-submit" id="btnSubmit" onclick="submitSignature()">Confirmar firma</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card" id="aclaracionCard" style="display:none">
+                                <div class="card-title">Tu aclaración</div>
+                                <div class="sign-area">
+                                    <p class="sign-label">Dibujá tu aclaración (nombre y apellido) en el recuadro de abajo:</p>
+                                    <canvas id="aclaracionCanvas" height="200"/>
+                                    <div class="btn-row">
+                                        <button class="btn btn-clear" onclick="clearAclaracion()">Limpiar</button>
+                                        <button class="btn btn-submit" id="btnAclaracion" onclick="submitAclaracion()">Confirmar aclaración</button>
                                     </div>
                                 </div>
                             </div>
@@ -71,58 +59,11 @@
                             </div>
                         </div>
                     </div>
-
                     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"/>
                     <script>
-                        var canvas = document.getElementById('signCanvas');
-                        var signaturePad;
-                        if (canvas) {
-                            // Ajustar resolución para pantallas retina
-                            var ratio = Math.max(window.devicePixelRatio || 1, 1);
-                            canvas.width = canvas.offsetWidth * ratio;
-                            canvas.height = 200 * ratio;
-                            canvas.getContext('2d').scale(ratio, ratio);
-                            signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(250,250,250)' });
-                        }
-
-                        function clearSignature() {
-                            if (signaturePad) signaturePad.clear();
-                        }
-
-                        function submitSignature() {
-                            if (!signaturePad || signaturePad.isEmpty()) {
-                                alert('Por favor dibujá tu firma antes de confirmar.');
-                                return;
-                            }
-                            var btn = document.getElementById('btnSubmit');
-                            btn.disabled = true;
-                            btn.textContent = 'Enviando...';
-
-                            var dataUrl = signaturePad.toDataURL('image/png');
-                            fetch('/sign/document/<t t-esc="token"/>/submit', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: { signature: dataUrl } })
-                            })
-                            .then(function(r) { return r.json(); })
-                            .then(function(data) {
-                                if (data.result &amp;&amp; data.result.success) {
-                                    document.querySelector('.card:last-of-type') &amp;&amp; null;
-                                    document.getElementById('successBox').style.display = 'block';
-                                    btn.closest('.card').style.display = 'none';
-                                } else {
-                                    alert('Error: ' + (data.result ? data.result.error : 'Error desconocido'));
-                                    btn.disabled = false;
-                                    btn.textContent = '✅ Confirmar firma';
-                                }
-                            })
-                            .catch(function() {
-                                alert('Error de conexión. Intentá nuevamente.');
-                                btn.disabled = false;
-                                btn.textContent = '✅ Confirmar firma';
-                            });
-                        }
+                        window.SIGN_TOKEN = '<t t-esc="token"/>';
                     </script>
+                    <script src="/custom_pdf_link/static/src/js/sign_page.js"/>
                 </body>
             </html>
         </template>

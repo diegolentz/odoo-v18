@@ -62,29 +62,55 @@ class SignPdfController(http.Controller):
         sign_req.write({
             'signature': signature,
             'signed_date': fields.Datetime.now(),
+            'state': 'aclaracion_pending',
+        })
+
+        return {'next_step': 'aclaracion'}
+
+    @http.route('/sign/document/<string:token>/aclaracion', type='json', auth='public', methods=['POST'])
+    def sign_aclaracion(self, token, aclaracion=None, **kwargs):
+        sign_req = request.env['custom_pdf_link.sign_request'].sudo().search([
+            ('token', '=', token),
+            ('state', '=', 'aclaracion_pending'),
+        ], limit=1)
+        if not sign_req:
+            return {'error': 'No encontrado o estado inválido'}
+        if not aclaracion:
+            return {'error': 'La aclaración no puede estar vacía'}
+
+        # Quitar prefijo data URL si existe
+        if ',' in aclaracion:
+            aclaracion = aclaracion.split(',')[1]
+
+        sign_req.write({
+            'aclaracion': aclaracion,
             'state': 'signed',
         })
 
-        # Publicar mensaje en el chatter del registro relacionado
+        # Publicar mensaje en el chatter con firma y aclaración
         attachment = sign_req.attachment_id
         if attachment.res_model and attachment.res_id:
             try:
                 record = request.env[attachment.res_model].sudo().browse(attachment.res_id)
                 if record.exists() and hasattr(record, 'message_post'):
-                    # Adjuntar imagen de firma como attachment del mensaje
-                    sign_attachment = request.env['ir.attachment'].sudo().create({
+                    firma_att = request.env['ir.attachment'].sudo().create({
                         'name': 'firma.png',
                         'type': 'binary',
-                        'datas': signature,
+                        'datas': sign_req.signature,
+                        'mimetype': 'image/png',
+                    })
+                    aclaracion_att = request.env['ir.attachment'].sudo().create({
+                        'name': 'aclaracion.png',
+                        'type': 'binary',
+                        'datas': aclaracion,
                         'mimetype': 'image/png',
                     })
                     record.message_post(
-                        body=f'✅ <b>Documento firmado:</b> {attachment.name}<br/>'
-                             f'<img src="/web/image/{sign_attachment.id}" style="max-width:300px;border:1px solid #ccc;border-radius:4px;margin-top:8px"/>',
+                        body=f'✅ Documento firmado: {attachment.name}',
                         subject='Documento firmado electrónicamente',
-                        attachment_ids=[sign_attachment.id],
+                        attachment_ids=[firma_att.id, aclaracion_att.id],
                     )
             except Exception:
-                pass  # No interrumpir el flujo si el chatter falla
+                pass
 
         return {'success': True}
