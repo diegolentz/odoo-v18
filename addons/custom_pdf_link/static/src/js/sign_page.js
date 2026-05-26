@@ -5,7 +5,7 @@ function initCanvas(id) {
     c.width = c.offsetWidth * ratio;
     c.height = 200 * ratio;
     c.getContext('2d').scale(ratio, ratio);
-    return new SignaturePad(c, { backgroundColor: 'rgb(250,250,250)' });
+    return new SignaturePad(c);
 }
 
 var signaturePad = initCanvas('signCanvas');

@@ -63,7 +63,7 @@
                     <script>
                         window.SIGN_TOKEN = '<t t-esc="token"/>';
                     </script>
-                    <script src="/custom_pdf_link/static/src/js/sign_page.js"/>
+                    <script src="/custom_pdf_link/static/src/js/sign_page.js?v=2"/>
                 </body>
             </html>
         </template>
