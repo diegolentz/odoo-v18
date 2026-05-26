@@ -6,7 +6,8 @@
                     <meta charset="UTF-8"/>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                     <title>Firmar documento</title>
-                    <link rel="stylesheet" href="/custom_pdf_link/static/src/css/sign_page.css"/>
+                    <link rel="stylesheet" href="/custom_pdf_link/static/src/css/sign_page.css?v=3"/>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>   
                 </head>
                 <body>
                     <div class="header">
@@ -26,7 +27,9 @@
                         <t t-else="">
                             <div class="card">
                                 <div class="card-title">📄 Documento a firmar: <t t-esc="sign_req.attachment_id.name"/></div>
-                                <iframe class="pdf-frame" t-att-src="pdf_url + '&amp;inline=true'"/>
+                                <!-- <iframe class="pdf-frame" t-att-src="pdf_url + '&amp;inline=true'"/>
+                                 -->
+                                 <div id="pdfContainer" class="pdf-container"></div>
                             </div>
                             <div class="card" id="firmaCard">
                                 <div class="card-title">Tu firma</div>
@@ -62,6 +65,7 @@
                     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"/>
                     <script>
                         window.SIGN_TOKEN = '<t t-esc="token"/>';
+                        window.PDF_URL = '<t t-esc="pdf_url"/>';
                     </script>
                     <script src="/custom_pdf_link/static/src/js/sign_page.js?v=2"/>
                 </body>

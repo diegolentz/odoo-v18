@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import logging
 from odoo import http, fields
 from odoo.http import request
 import base64
+
+_logger = logging.getLogger(__name__)
 
 
 class SignPdfController(http.Controller):
@@ -22,7 +25,8 @@ class SignPdfController(http.Controller):
                 'attachment_id': attachment.id,
             })
 
-        base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        # base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        base_url = 'https://accidentes.legasesor.com'
         url = f"{base_url}/sign/document/{sign_req.token}"
         return {'url': url}
 
@@ -58,6 +62,7 @@ class SignPdfController(http.Controller):
         # Quitar prefijo data URL si existe
         if ',' in signature:
             signature = signature.split(',')[1]
+        _logger.info('[SIGN] submit token=%s signature_len=%d', token, len(signature))
 
         sign_req.write({
             'signature': signature,
@@ -81,6 +86,7 @@ class SignPdfController(http.Controller):
         # Quitar prefijo data URL si existe
         if ',' in aclaracion:
             aclaracion = aclaracion.split(',')[1]
+        _logger.info('[SIGN] aclaracion token=%s aclaracion_len=%d sign_req.signature_len=%d', token, len(aclaracion), len(sign_req.signature or ''))
 
         sign_req.write({
             'aclaracion': aclaracion,
@@ -98,19 +104,24 @@ class SignPdfController(http.Controller):
                         'type': 'binary',
                         'datas': sign_req.signature,
                         'mimetype': 'image/png',
+                        'res_model': attachment.res_model,
+                        'res_id': attachment.res_id,
                     })
                     aclaracion_att = request.env['ir.attachment'].sudo().create({
                         'name': 'aclaracion.png',
                         'type': 'binary',
                         'datas': aclaracion,
                         'mimetype': 'image/png',
+                        'res_model': attachment.res_model,
+                        'res_id': attachment.res_id,
                     })
                     record.message_post(
                         body=f'✅ Documento firmado: {attachment.name}',
                         subject='Documento firmado electrónicamente',
                         attachment_ids=[firma_att.id, aclaracion_att.id],
                     )
-            except Exception:
-                pass
+                    _logger.info('[SIGN] message_post OK firma_att=%s aclaracion_att=%s', firma_att.id, aclaracion_att.id)
+            except Exception as e:
+                _logger.exception('Error al postear firma en chatter: %s', e)
 
         return {'success': True}

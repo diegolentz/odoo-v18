@@ -1,7 +1,46 @@
+// PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+function renderPDF(url) {
+    var container = document.getElementById('pdfContainer');
+    container.innerHTML = '<p style="padding:16px;color:#888;">Cargando PDF...</p>';
+
+    pdfjsLib.getDocument(url).promise.then(function(pdf) {
+        container.innerHTML = '';
+        for (var i = 1; i <= pdf.numPages; i++) {
+            (function(pageNum) {
+                pdf.getPage(pageNum).then(function(page) {
+                    var dpr = window.devicePixelRatio || 1;
+                    var scale = (container.offsetWidth / page.getViewport({ scale: 1 }).width) * dpr;
+                    var viewport = page.getViewport({ scale: scale });
+                    var canvas = document.createElement('canvas');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    canvas.style.display = 'block';
+                    canvas.style.width = '100%';
+                    canvas.style.marginBottom = '2px';
+                    container.appendChild(canvas);
+                    page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport });
+                });
+            })(i);
+        }
+    }).catch(function(err) {
+        container.innerHTML = '<p style="padding:16px;color:red;">Error al cargar el PDF.</p>';
+        console.error(err);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.PDF_URL) {
+        var url = window.location.origin + window.PDF_URL;
+        renderPDF(url);
+    }
+});
+
 function initCanvas(id) {
     var c = document.getElementById(id);
     if (!c) return null;
-    var ratio = Math.max(window.devicePixelRatio || 1, 1);
+    var ratio = 1;
     c.width = c.offsetWidth * ratio;
     c.height = 200 * ratio;
     c.getContext('2d').scale(ratio, ratio);
