@@ -2,7 +2,6 @@
 import logging
 from odoo import http, fields
 from odoo.http import request
-import base64
 
 _logger = logging.getLogger(__name__)
 
@@ -104,23 +103,21 @@ class SignPdfController(http.Controller):
                         'type': 'binary',
                         'datas': sign_req.signature,
                         'mimetype': 'image/png',
-                        'res_model': attachment.res_model,
-                        'res_id': attachment.res_id,
                     })
                     aclaracion_att = request.env['ir.attachment'].sudo().create({
                         'name': 'aclaracion.png',
                         'type': 'binary',
                         'datas': aclaracion,
                         'mimetype': 'image/png',
-                        'res_model': attachment.res_model,
-                        'res_id': attachment.res_id,
                     })
-                    record.message_post(
+                    msg = record.sudo().message_post(
                         body=f'✅ Documento firmado: {attachment.name}',
                         subject='Documento firmado electrónicamente',
-                        attachment_ids=[firma_att.id, aclaracion_att.id],
                     )
-                    _logger.info('[SIGN] message_post OK firma_att=%s aclaracion_att=%s', firma_att.id, aclaracion_att.id)
+                    msg.sudo().write({
+                        'attachment_ids': [(4, firma_att.id), (4, aclaracion_att.id)],
+                    })
+                    _logger.info('[SIGN] message_post OK msg=%s firma_att=%s aclaracion_att=%s', msg.id, firma_att.id, aclaracion_att.id)
             except Exception as e:
                 _logger.exception('Error al postear firma en chatter: %s', e)
 

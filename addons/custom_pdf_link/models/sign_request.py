@@ -17,5 +17,4 @@ class SignRequest(models.Model):
         ('aclaracion_pending', 'Esperando Aclaración'),
         ('signed', 'Firmado'),
     ], default='pending', readonly=True)
-    res_model = fields.Char('Modelo relacionado')
-    res_id = fields.Integer('ID de registro')
+
