@@ -25,7 +25,8 @@ canvas { width: 100%; display: block; }
 #signCanvas, #aclaracionCanvas {height: 250px; border: 2px solid #ccc; background: #fff; }
 
 @media (max-width: 720px) {
-    .container { max-width: 95vw; padding: 0; }
+    .container { max-width: 100vw; padding: 0; }
+    .card { overflow: visible; }
+    #signCanvas, #aclaracionCanvas { height: 220px; }
 }
-
 

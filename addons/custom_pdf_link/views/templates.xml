@@ -34,7 +34,7 @@
                             <div class="card" id="firmaCard">
                                 <div class="card-title">Tu firma</div>
                                 <div class="sign-area">
-                                    <p class="sign-label">Dibujá tu firma en el recuadro de abajo con el dedo o el mouse:</p>
+                                    <p class="sign-label">Dibujá tu firma en el recuadro de abajo con el dedo o el mouse</p>
                                     <canvas id="signCanvas" height="200"/>
                                     <div class="btn-row">
                                         <button class="btn btn-clear" onclick="clearFirma()">Limpiar</button>

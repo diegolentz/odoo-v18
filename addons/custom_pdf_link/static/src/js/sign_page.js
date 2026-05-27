@@ -32,25 +32,69 @@ function renderPDF(url) {
 
 document.addEventListener('DOMContentLoaded', function() {
     if (window.PDF_URL) {
-        var url = window.location.origin + window.PDF_URL;
-        renderPDF(url);
+        renderPDF(window.location.origin + window.PDF_URL);
     }
 });
 
-function initCanvas(id) {
-    var c = document.getElementById(id);
-    if (!c) return null;
-    var ratio = 1;
-    c.width = c.offsetWidth * ratio;
-    c.height = 200 * ratio;
-    c.getContext('2d').scale(ratio, ratio);
-    return new SignaturePad(c, { backgroundColor: 'rgba(0,0,0,0)' });
-}
+// --- Canvas / SignaturePad ---
 
-var signaturePad = initCanvas('signCanvas');
+var signaturePad = null;
 var aclaracionPad = null;
 
-function clearFirma() { if (signaturePad) signaturePad.clear(); }
+// Sets canvas internal resolution to match its CSS size × devicePixelRatio,
+// fixing coordinate drift on Retina/High-DPI screens and after rotation.
+function resizeCanvas(canvas, pad) {
+    if (!canvas || canvas.offsetWidth === 0) return;
+
+    var dataURL = (pad && !pad.isEmpty()) ? pad.toDataURL() : null;
+
+    var ratio = window.devicePixelRatio || 1;
+    canvas.width  = canvas.offsetWidth  * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    canvas.getContext('2d').scale(ratio, ratio);
+
+    if (pad) {
+        pad.clear();
+        if (dataURL) {
+            pad.fromDataURL(dataURL, { ratio: 1 });
+        }
+    }
+}
+
+function initCanvas(id) {
+    var canvas = document.getElementById(id);
+    if (!canvas) return null;
+
+    var pad = new SignaturePad(canvas, {
+        backgroundColor: 'rgba(0,0,0,0)',
+        penColor: 'rgb(0,0,0)',
+        minWidth: 1.5,
+        maxWidth: 3.5
+    });
+
+    resizeCanvas(canvas, pad);
+    return pad;
+}
+
+function debounce(fn, ms) {
+    var timer;
+    return function() { clearTimeout(timer); timer = setTimeout(fn, ms); };
+}
+
+function handleResize() {
+    resizeCanvas(document.getElementById('signCanvas'), signaturePad);
+    resizeCanvas(document.getElementById('aclaracionCanvas'), aclaracionPad);
+}
+
+window.addEventListener('resize', debounce(handleResize, 150));
+// orientationchange fires before the layout reflows; wait for it to settle
+window.addEventListener('orientationchange', function() {
+    setTimeout(handleResize, 300);
+});
+
+signaturePad = initCanvas('signCanvas');
+
+function clearFirma()     { if (signaturePad)  signaturePad.clear(); }
 function clearAclaracion() { if (aclaracionPad) aclaracionPad.clear(); }
 
 function submitSignature() {
@@ -72,7 +116,10 @@ function submitSignature() {
         if (data.result && data.result.next_step === 'aclaracion') {
             document.getElementById('firmaCard').style.display = 'none';
             document.getElementById('aclaracionCard').style.display = 'block';
-            aclaracionPad = initCanvas('aclaracionCanvas');
+            // Use rAF so the browser reflows the newly-visible canvas before we read offsetWidth
+            requestAnimationFrame(function() {
+                aclaracionPad = initCanvas('aclaracionCanvas');
+            });
         } else {
             alert('Error: ' + (data.result ? data.result.error : 'Error desconocido'));
             btn.disabled = false;
