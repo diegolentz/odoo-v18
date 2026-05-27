@@ -103,12 +103,16 @@ class SignPdfController(http.Controller):
                         'type': 'binary',
                         'datas': sign_req.signature,
                         'mimetype': 'image/png',
+                        'res_model': attachment.res_model,
+                        'res_id': attachment.res_id,
                     })
                     aclaracion_att = request.env['ir.attachment'].sudo().create({
                         'name': 'aclaracion.png',
                         'type': 'binary',
                         'datas': aclaracion,
                         'mimetype': 'image/png',
+                        'res_model': attachment.res_model,
+                        'res_id': attachment.res_id,
                     })
                     msg = record.sudo().message_post(
                         body=f'✅ Documento firmado: {attachment.name}',
