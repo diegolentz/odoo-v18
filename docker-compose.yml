@@ -29,7 +29,11 @@ services:
 
 volumes:
   odoo-data:
+    external: true
+    name: odoo_odoo-data
   db-data:
+    external: true
+    name: odoo_db-data
 
 networks:
   general-net:
