@@ -31,5 +31,11 @@ Long description of module's purpose
     'demo': [
         'demo/demo.xml',
     ],
+
+    'assets': {
+        'web.assets_backend': [
+            'legos18/static/src/js/crm_confirma_report_list.js',
+        ],
+    },
 }
 

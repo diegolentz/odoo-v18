@@ -16,16 +16,6 @@ class Legos18CrmConfirmaReport(models.Model):
     source_id = fields.Many2one('utm.source', string='Origen', readonly=True)
     fecha_entrada = fields.Datetime(string='Fecha de entrada a Confirmado', readonly=True)
 
-    def action_open_lead(self):
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'crm.lead',
-            'res_id': self.lead_id.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
-
     def init(self):
         tools.drop_view_if_exists(self._cr, 'legos18_crm_confirma_report')
         self._cr.execute("""
