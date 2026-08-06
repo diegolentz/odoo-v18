@@ -1,43 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<templates xml:space="preserve">
-    <t t-name="custom_dashboard.Dashboard">
-        <div class="o_action p-3">
-            <div class="row g-3 mb-3">
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header fw-bold">Confirmados - Gráfico</div>
-                        <div class="card-body" style="height:350px;overflow:auto;">
-                            <View t-props="confirmaGraphProps"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header fw-bold">Confirmados - Pivot</div>
-                        <div class="card-body" style="height:350px;overflow:auto;">
-                            <View t-props="confirmaPivotProps"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<t t-name="custom_dashboard.Dashboard">
+    <div class="o_action dashboard-wrapper">
+        <div class="container-fluid">
+
+            <!-- Primera fila -->
             <div class="row g-3">
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header fw-bold">Leads por Etapa</div>
-                        <div class="card-body" style="height:350px;overflow:auto;">
-                            <View t-props="leadsEtapaProps"/>
+
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card dashboard-card">
+                        <div class="card-header fw-bold">
+                            Confirmados por Comercial
+                        </div>
+                        <div class="card-body dashboard-body">
+                            <View t-props="confirmaComercialProps"/>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header fw-bold">Actividades Pendientes</div>
-                        <div class="card-body" style="height:350px;overflow:auto;">
-                            <View t-props="actividadesProps"/>
+
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card dashboard-card">
+                        <div class="card-header fw-bold">
+                            Confirmados por Origen
+                        </div>
+                        <div class="card-body dashboard-body">
+                            <View t-props="confirmaOrigenProps"/>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card dashboard-card">
+                        <div class="card-header fw-bold">
+                            Confirmados por Referido
+                        </div>
+                        <div class="card-body dashboard-body">
+                            <View t-props="confirmaReferidoProps"/>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+            <div class="row g-3 mt-1">
+
+                <div class="col-12 col-xl-6">
+                    <div class="card dashboard-card">
+                        <div class="card-header fw-bold">
+                            Equipo Ingreso
+                        </div>
+                        <div class="card-body dashboard-body">
+                            <View t-props="equipoIngresoProps"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-6">
+                    <div class="card dashboard-card">
+                        <div class="card-header fw-bold">
+                            Equipo Cierre
+                        </div>
+                        <div class="card-body dashboard-body">
+                            <View t-props="equipoCierreProps"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
-    </t>
-</templates>
+    </div>
+</t>

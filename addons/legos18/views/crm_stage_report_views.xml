@@ -28,12 +28,15 @@
     </field>
 </record>
 
-<!-- graph -->
+<!-- graph confirmados (usado por dashboard - incluye campos groupables) -->
 <record id="view_legos18_crm_confirma_report_graph" model="ir.ui.view">
     <field name="name">legos18.crm.confirma.report.graph</field>
     <field name="model">legos18.crm.confirma.report</field>
     <field name="arch" type="xml">
         <graph string="Pasos por Confirmado" type="bar">
+            <field name="user_id" type="row"/>
+            <field name="source_id"/>
+            <field name="referido"/>
             <field name="fecha_entrada" interval="month"/>
         </graph>
     </field>
@@ -74,6 +77,17 @@
     parent="crm.crm_menu_report"
     action="action_legos18_crm_confirma_report"
     sequence="10"/>
+
+<!-- graph movimientos de etapa (equipo ingreso / cierre) -->
+<record id="view_legos18_crm_stage_mov_graph" model="ir.ui.view">
+    <field name="name">legos18.crm.stage.mov.graph</field>
+    <field name="model">legos18.crm.stage.mov</field>
+    <field name="arch" type="xml">
+        <graph string="Movimientos de Etapa" type="bar">
+            <field name="stage_to_name" type="row"/>
+        </graph>
+    </field>
+</record>
 
 </data>
 </odoo>

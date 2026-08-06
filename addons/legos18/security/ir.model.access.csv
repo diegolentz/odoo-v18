@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_legos18_crm_confirma_report,legos18.crm.confirma.report,model_legos18_crm_confirma_report,base.group_user,1,0,0,0
+access_legos18_crm_stage_mov,legos18.crm.stage.mov,model_legos18_crm_stage_mov,base.group_user,1,0,0,0

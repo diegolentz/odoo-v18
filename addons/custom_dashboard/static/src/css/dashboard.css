@@ -1,0 +1,27 @@
+.dashboard-wrapper {
+    padding: 16px;
+}
+
+/* Odoo pone overflow:hidden en .o_action — lo sobreescribimos solo en nuestro dashboard */
+.o_action.dashboard-wrapper {
+    overflow-y: auto !important;
+    height: 100% !important;
+}
+
+.o_action_manager {
+    overflow-y: auto !important;
+}
+
+.dashboard-card {
+    height: 600px;
+}
+
+.dashboard-body {
+    height: calc(600px - 48px);
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .dashboard-card { height: 600px; }
+    .dashboard-body { height: calc(600px - 48px); }
+}
