@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="custom_dashboard.Dashboard">
+        <div class="o_action p-3">
+            <div class="row g-3 mb-3">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header fw-bold">Confirmados - Gráfico</div>
+                        <div class="card-body" style="height:350px;overflow:auto;">
+                            <View t-props="confirmaGraphProps"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header fw-bold">Confirmados - Pivot</div>
+                        <div class="card-body" style="height:350px;overflow:auto;">
+                            <View t-props="confirmaPivotProps"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header fw-bold">Leads por Etapa</div>
+                        <div class="card-body" style="height:350px;overflow:auto;">
+                            <View t-props="leadsEtapaProps"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header fw-bold">Actividades Pendientes</div>
+                        <div class="card-body" style="height:350px;overflow:auto;">
+                            <View t-props="actividadesProps"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
