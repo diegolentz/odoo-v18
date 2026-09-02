@@ -28,7 +28,7 @@ class CustomCrmLeads(models.Model):
     audiencia_medica = fields.Float(compute="_compute_audiencia_medica", store=True, tracking=True)
     instancia_judicial = fields.Float(compute="_compute_instancia_judicial", store=True, tracking=True)
 
-    prioridad_estimada = fields.Selection([
+    prioridad_automatica = fields.Selection([
         ('0', 'Ninguna'),
         ('1', 'Leve'),
         ('2', 'Medio'),
@@ -143,11 +143,11 @@ class CustomCrmLeads(models.Model):
     def _compute_prioridad(self):
         for record in self:
             if record.junta_medica < 30000000:
-                record.prioridad_estimada = '1'
+                record.prioridad_automatica = '1'
             elif record.junta_medica < 80000000:
-                record.prioridad_estimada = '2'
+                record.prioridad_automatica = '2'
             else:
-                record.prioridad_estimada = '3'
+                record.prioridad_automatica = '3'
 
     def _generate_whatsapp_url(self, phone, message):
         return {

@@ -31,7 +31,7 @@
                     <field name="junta_medica"/>
                     <field name="audiencia_medica"/>
                     <field name="instancia_judicial"/>
-                    <field name="prioridad_estimada" widget="priority"/>
+                    <field name="prioridad_automatica" widget="priority"/>
                     <field name="coeficiente_actualizacion"/>
                     <field name="celular_alternativo"/>
                     <field name="telefono_secundario"/>

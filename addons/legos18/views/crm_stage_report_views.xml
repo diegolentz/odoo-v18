@@ -13,6 +13,8 @@
             <field name="referido"/>
             <field name="source_id"/>
             <field name="fecha_entrada"/>
+            <field name="priority"/>
+            <field name="active"/>
         </list>
     </field>
 </record>
@@ -24,6 +26,7 @@
     <field name="arch" type="xml">
         <pivot string="Pasos por Confirmado">
             <field name="fecha_entrada" interval="month" type="row"/>
+            <field name="priority" type="col"/>
         </pivot>
     </field>
 </record>
@@ -37,6 +40,7 @@
             <field name="user_id" type="row"/>
             <field name="source_id"/>
             <field name="referido"/>
+            <field name="priority"/>
             <field name="fecha_entrada" interval="month"/>
         </graph>
     </field>
@@ -51,12 +55,20 @@
             <field name="user_id"/>
             <field name="referido"/>
             <field name="source_id"/>
+            <field name="priority"/>
             <filter string="Fecha de entrada" name="filter_fecha_entrada" date="fecha_entrada"/>
+            <separator/>
+            <filter string="Perdidos" name="filter_perdidos" domain="[('active', '=', False)]"/>
+            <separator/>
+            <filter string="Leve" name="filter_prioridad_leve" domain="[('priority', '=', '1')]"/>
+            <filter string="Medio" name="filter_prioridad_medio" domain="[('priority', '=', '2')]"/>
+            <filter string="Grave" name="filter_prioridad_grave" domain="[('priority', '=', '3')]"/>
             <group expand="0" string="Agrupar por">
                 <filter string="Mes" name="group_month" context="{'group_by': 'fecha_entrada:month'}"/>
                 <filter string="Comercial" name="group_user" context="{'group_by': 'user_id'}"/>
                 <filter string="Referido" name="group_referido" context="{'group_by': 'referido'}"/>
                 <filter string="Origen" name="group_origen" context="{'group_by': 'source_id'}"/>
+                <filter string="Prioridad" name="group_prioridad" context="{'group_by': 'priority'}"/>
             </group>
         </search>
     </field>
