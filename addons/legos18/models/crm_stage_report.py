@@ -31,12 +31,12 @@ class Legos18CrmConfirmaReport(models.Model):
                     msg.res_id          AS id,
                     msg.res_id          AS lead_id,
                     lead.partner_id     AS partner_id,
-                    msg.create_uid      AS user_id,
+                    lead.user_id        AS user_id,
                     lead.referred       AS referido,
                     lead.source_id      AS source_id,
                     msg.date            AS fecha_entrada,
                     lead.active         AS active,
-                    lead.priority_custom AS priority
+                    lead.priority       AS priority
                 FROM mail_tracking_value tv
                 JOIN mail_message msg ON msg.id = tv.mail_message_id
                 JOIN crm_lead lead    ON lead.id = msg.res_id

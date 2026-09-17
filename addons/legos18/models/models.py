@@ -33,7 +33,7 @@ class CustomCrmLeads(models.Model):
         ('1', 'Leve'),
         ('2', 'Medio'),
         ('3', 'Grave'),
-    ], compute="_compute_prioridad", store=True, tracking=True)
+    ], compute="_compute_prioridad", tracking=True)
 
     number_dots = fields.Text(compute='_compute_number_dots', tracking=True)
 
@@ -72,7 +72,6 @@ class CustomCrmLeads(models.Model):
         string='Prioridad',
         compute='_compute_priority_custom',
         inverse='_inverse_priority_custom',
-        store=True,
         readonly=False,
         tracking=True,
         default='0',

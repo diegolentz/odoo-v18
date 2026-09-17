@@ -21,12 +21,13 @@ class Legos18CrmStageMov(models.Model):
                 SELECT
                     tv.id                AS id,
                     msg.res_id           AS lead_id,
-                    msg.create_uid       AS user_id,
+                    lead.user_id         AS user_id,
                     tv.new_value_integer AS stage_to_id,
                     tv.new_value_char    AS stage_to_name,
                     msg.date             AS fecha
                 FROM mail_tracking_value tv
                 JOIN mail_message msg ON msg.id = tv.mail_message_id
+                JOIN crm_lead lead    ON lead.id = msg.res_id
                 WHERE msg.model = 'crm.lead'
                   AND tv.field_id = (
                       SELECT id FROM ir_model_fields
