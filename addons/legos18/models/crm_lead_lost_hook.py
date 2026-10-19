@@ -8,8 +8,8 @@ from odoo import models
 _logger = logging.getLogger(__name__)
 
 # URL del webhook de n8n que escucha los leads marcados como perdidos.
-# TODO: reemplazar por la URL real cuando esté disponible.
-N8N_LEAD_LOST_WEBHOOK_URL = "https://www.ejemplo.com"
+# Workflow n8n: LEGASESOR_Contactar perdidos (desde Contactado).
+N8N_LEAD_LOST_WEBHOOK_URL = "https://n8n.apps.confortm.com/webhook/legasesor-lead-perdido"
 
 
 class CrmLeadLostHook(models.TransientModel):
@@ -26,7 +26,10 @@ class CrmLeadLostHook(models.TransientModel):
     def _notify_n8n_lead_lost(self):
         """Envía a n8n el/los lead(s) perdidos, quién los marcó y el motivo."""
         payload = []
-        for lead in self.lead_ids:
+        # Esto corre después de super(), que ya archivó los leads
+        # (active=False): sin active_test=False el many2many los filtra y
+        # lead_ids viene vacío.
+        for lead in self.with_context(active_test=False).lead_ids:
             payload.append({
                 "lead_id": lead.id,
                 "lead_name": lead.name,

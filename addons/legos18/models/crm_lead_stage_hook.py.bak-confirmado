@@ -1,0 +1,60 @@
+# -*- coding: utf-8 -*-
+import logging
+import threading
+
+import requests
+
+from odoo import models
+
+_logger = logging.getLogger(__name__)
+
+# etapa (crm.stage.id) -> webhook de n8n que arma la actividad de esa etapa.
+# Para sumar una etapa (Citado, Iniciado...) se agrega una línea acá.
+# Las etapas que no están en el dict no generan ningún request.
+STAGE_WEBHOOKS = {
+    # 3 (Interesado): workflow LEGASESOR_NUEVOS INTERESADOS
+    3: "https://n8n.apps.confortm.com/webhook/legasesor-lead-interesado",
+    # 5 (Citado): workflow LEGASESOR_NUEVOS CITADOS
+    5: "https://n8n.apps.confortm.com/webhook/legasesor-lead-citado",
+}
+
+
+def _post(url, payload):
+    try:
+        requests.post(url, json=payload, timeout=5)
+    except Exception as e:
+        _logger.error("Error al avisar a n8n del cambio de etapa (%s): %s", url, e)
+
+
+class CrmLeadStageHook(models.Model):
+    """Avisa a n8n, en el momento, cuando un lead entra a una etapa con flujo automático."""
+    _inherit = 'crm.lead'
+
+    def write(self, vals):
+        if 'stage_id' not in vals:
+            return super().write(vals)
+
+        anteriores = {lead.id: lead.stage_id.id for lead in self}
+        res = super().write(vals)
+
+        por_url = {}
+        for lead in self:
+            url = STAGE_WEBHOOKS.get(lead.stage_id.id)
+            if url and lead.stage_id.id != anteriores.get(lead.id):
+                por_url.setdefault(url, []).append({
+                    "lead_id": lead.id,
+                    "stage_id": lead.stage_id.id,
+                    "stage_anterior_id": anteriores.get(lead.id),
+                    "user_id": lead.user_id.id or None,
+                })
+
+        for url, payload in por_url.items():
+            # Después del commit: un rollback no dispara mensajes, y n8n
+            # encuentra el cambio ya guardado. En un hilo aparte para que un
+            # n8n lento o caído nunca demore la respuesta al usuario. Un solo
+            # request por lote aunque se muevan muchos leads a la vez.
+            self.env.cr.postcommit.add(
+                lambda url=url, payload=payload: threading.Thread(
+                    target=_post, args=(url, payload), daemon=True).start()
+            )
+        return res

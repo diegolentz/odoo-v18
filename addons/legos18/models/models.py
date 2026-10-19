@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
-import requests
+# import requests
 
 class CustomCrmLeads(models.Model):
     _inherit = 'crm.lead'
@@ -11,9 +11,9 @@ class CustomCrmLeads(models.Model):
     grado_lesion = fields.Float(string='Grado de Lesión', default=10, tracking=True)
     fractura = fields.Boolean(string='Fractura', tracking=True)
     ingreso_base = fields.Integer(string='Salario Base', tracking=True)
-    coeficiente_actualizacion = fields.Float(default=1.2, tracking=True)
-    salario_actualizado = fields.Float(compute="_compute_salario_actualizado", store=True, tracking=True)
-    ingreso_bruto = fields.Float(compute="_compute_ingreso_bruto", store=True, tracking=True)
+    coeficiente_actualizacion = fields.Float(default=1.2)
+    salario_actualizado = fields.Float(compute="_compute_salario_actualizado", store=True)
+    ingreso_bruto = fields.Float(compute="_compute_ingreso_bruto", store=True)
     tipo_accidente = fields.Selection([
         ('trabajo', 'Accidente de Trabajo'),
         ('itinere', 'In Itinere')
@@ -24,18 +24,18 @@ class CustomCrmLeads(models.Model):
     fecha_cobro = fields.Date(string='Fecha de Cobro Estimada', tracking=True)
     tipo_lesion = fields.Char(string='Tipo de Lesión', tracking=True)
 
-    junta_medica = fields.Float(compute="_compute_junta_medica", store=True, tracking=True)
-    audiencia_medica = fields.Float(compute="_compute_audiencia_medica", store=True, tracking=True)
-    instancia_judicial = fields.Float(compute="_compute_instancia_judicial", store=True, tracking=True)
+    junta_medica = fields.Float(compute="_compute_junta_medica", store=True)
+    audiencia_medica = fields.Float(compute="_compute_audiencia_medica", store=True)
+    instancia_judicial = fields.Float(compute="_compute_instancia_judicial", store=True)
 
     prioridad_automatica = fields.Selection([
         ('0', 'Ninguna'),
         ('1', 'Leve'),
         ('2', 'Medio'),
         ('3', 'Grave'),
-    ], compute="_compute_prioridad", tracking=True)
+    ], compute="_compute_prioridad", store=True)
 
-    number_dots = fields.Text(compute='_compute_number_dots', tracking=True)
+    number_dots = fields.Text(compute='_compute_number_dots')
 
     fuero = fields.Selection([
         ('accidente_art', 'Accidente ART'),
@@ -60,24 +60,34 @@ class CustomCrmLeads(models.Model):
     mobile = fields.Char(tracking=True)                                 # Móvil
     stage_id = fields.Many2one('crm.stage', tracking=True)              # Etapa (statusbar)
     user_id = fields.Many2one('res.users', tracking=True)               # Responsable
-    team_id = fields.Many2one('crm.team', tracking=True)                # Equipo de ventas
-    tag_ids = fields.Many2many('crm.tag', tracking=True)                # Etiquetas
+    # team_id = fields.Many2one('crm.team', tracking=True)                 Equipo de ventas
+    # tag_ids = fields.Many2many('crm.tag', tracking=True)                 Etiquetas
     expected_revenue = fields.Monetary(tracking=True)                   # Ingreso esperado
-    probability = fields.Float(tracking=True)                           # Probabilidad
-    date_deadline = fields.Date(tracking=True)                          # Fecha cierre esperada
+    # probability = fields.Float(tracking=True)                            Probabilidad
+    # date_deadline = fields.Date(tracking=True)                           Fecha cierre esperada
     lost_reason_id = fields.Many2one('crm.lost.reason', tracking=True)  # Razón pérdida
     description = fields.Html(tracking=True)  
     priority_custom = fields.Selection(
         [('0', 'Ninguna'), ('1', 'Leve'), ('2', 'Medio'), ('3', 'Grave')],
-        string='Prioridad',
+        string='Prioridad Caso',
         compute='_compute_priority_custom',
         inverse='_inverse_priority_custom',
         readonly=False,
-        tracking=True,
+        store=True,
         default='0',
     )
 
     prestadora = fields.Char(string='Prestadora', tracking=True)
+    
+    dni = fields.Char(string='DNI')
+    relato_hechos = fields.Text(string='Relato de Hechos')
+    comision_medica = fields.Text(string='Comisión Médica')
+    diagnostico_contingencia = fields.Text(string='Diagnóstico Contingencia')
+    datos_empleador = fields.Text(string='Datos Empleador')
+    cuit = fields.Char(string='CUIT')
+    razon_social = fields.Char(string='Razón Social')
+    domicilio_empleador = fields.Text(string='Domicilio Empleador')
+    domicilio_trabajador = fields.Text(string='Domicilio Trabajador')
 
     _sql_constraints = [
         ('phone_unique', 'unique(phone)', 'El número ingresado ya existe, verifique el campo Teléfono')
@@ -188,40 +198,40 @@ class CustomCrmLeads(models.Model):
         return self._generate_whatsapp_url(self.celular, message)
 
 
-    def contactarNuevos_n8n(self):
-        stageNuevo = self.env['crm.stage'].search([('name', '=', 'New')], limit=1)
-        if not stageNuevo:
-            return
+    # def contactarNuevos_n8n(self):
+    #     stageNuevo = self.env['crm.stage'].search([('name', '=', 'New')], limit=1)
+    #     if not stageNuevo:
+    #         return
         
-        leadsNuevos = self.env['crm.lead'].search([('stage_id', '=', stageNuevo.id)])
-        if not leadsNuevos:
-            return
+    #     leadsNuevos = self.env['crm.lead'].search([('stage_id', '=', stageNuevo.id)])
+    #     if not leadsNuevos:
+    #         return
         
-        enviarN8N = []
-        for lead in leadsNuevos:
-            enviarN8N.append({
-                "id": lead.id,
-                "name": lead.name,
-                "contact_name": lead.contact_name,
-                "celular": lead.celular,
-                "email_from": lead.email_from,
-                "phone": lead.phone,
-                "mobile": lead.mobile,
-                "stage_id": lead.stage_id.id if lead.stage_id else None,
-                "user_id": lead.user_id.id if lead.user_id else None,
-                "team_id": lead.team_id.id if lead.team_id else None,
-                "tag_ids": [tag.id for tag in lead.tag_ids],
-                "expected_revenue": lead.expected_revenue,
-                "probability": lead.probability,
-                "date_deadline": str(lead.date_deadline) if lead.date_deadline else None,
-                "lost_reason_id": lead.lost_reason_id.id if lead.lost_reason_id else None
-            })
+    #     enviarN8N = []
+    #     for lead in leadsNuevos:
+    #         enviarN8N.append({
+    #             "id": lead.id,
+    #             "name": lead.name,
+    #             "contact_name": lead.contact_name,
+    #             "celular": lead.celular,
+    #             "email_from": lead.email_from,
+    #             "phone": lead.phone,
+    #             "mobile": lead.mobile,
+    #             "stage_id": lead.stage_id.id if lead.stage_id else None,
+    #             "user_id": lead.user_id.id if lead.user_id else None,
+    #             "team_id": lead.team_id.id if lead.team_id else None,
+    #             "tag_ids": [tag.id for tag in lead.tag_ids],
+    #             "expected_revenue": lead.expected_revenue,
+    #             "probability": lead.probability,
+    #             "date_deadline": str(lead.date_deadline) if lead.date_deadline else None,
+    #             "lost_reason_id": lead.lost_reason_id.id if lead.lost_reason_id else None
+    #         })
         
-        try:
-            requests.post(
-                "https://n8nlegasesor.apps.confortm.com/webhook/2e311742-2db6-47ec-81e4-d8692db9e13a",
-                json=enviarN8N,
-                timeout=5
-            )
-        except Exception as e:
-            print(f"Error al enviar datos a n8n: {e}")
+    #     try:
+    #         requests.post(
+    #             "https://n8nlegasesor.apps.confortm.com/webhook/2e311742-2db6-47ec-81e4-d8692db9e13a",
+    #             json=enviarN8N,
+    #             timeout=5
+    #         )
+    #     except Exception as e:
+    #         print(f"Error al enviar datos a n8n: {e}")

@@ -36,10 +36,51 @@
                     <field name="celular_alternativo"/>
                     <field name="telefono_secundario"/>
                     <field name="telefono_alternativo"/>
+                    <field name="dni"/>
+                    <field name="relato_hechos"/>
+                    <field name="comision_medica"/>
+                    <field name="diagnostico_contingencia"/>
+                    <field name="datos_empleador"/>
+                    <field name="cuit"/>
+                    <field name="razon_social"/>
+                    <field name="domicilio_empleador"/>
+                    <field name="domicilio_trabajador"/>
                 </xpath>
 
                 <xpath expr="//div[@class='o_lead_opportunity_form_inline_fields']/field[@name='priority']" position="replace"/>
 
+            </field>
+        </record>
+
+        <record id="view_crm_case_leads_filter_custom" model="ir.ui.view">
+            <field name="name">crm.lead.search.leads.custom</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='lead_properties']" position="after">
+                    <field name="prioridad_automatica" string="Prioridad Automática"/>
+                    <field name="priority_custom" string="Prioridad Caso"/>
+                </xpath>
+                <xpath expr="//filter[@name='group_by_lead_properties']" position="after">
+                    <filter string="Prioridad Automática" name="group_by_prioridad_automatica" context="{'group_by': 'prioridad_automatica'}"/>
+                    <filter string="Prioridad Caso" name="group_by_priority_custom" context="{'group_by': 'priority_custom'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_crm_case_opportunities_filter_custom" model="ir.ui.view">
+            <field name="name">crm.lead.search.opportunities.custom</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='lead_properties']" position="after">
+                    <field name="prioridad_automatica" string="Prioridad Automática"/>
+                    <field name="priority_custom" string="Prioridad Caso"/>
+                </xpath>
+                <xpath expr="//filter[@name='group_by_lead_properties']" position="after">
+                    <filter string="Prioridad Automática" name="group_by_prioridad_automatica" context="{'group_by': 'prioridad_automatica'}"/>
+                    <filter string="Prioridad Caso" name="group_by_priority_custom" context="{'group_by': 'priority_custom'}"/>
+                </xpath>
             </field>
         </record>
     </data>

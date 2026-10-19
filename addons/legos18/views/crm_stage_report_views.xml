@@ -6,13 +6,13 @@
     <field name="name">legos18.crm.confirma.report.list</field>
     <field name="model">legos18.crm.confirma.report</field>
     <field name="arch" type="xml">
-        <list string="Pasos por Confirmado" js_class="legos18_confirma_list">
-            <field name="lead_id"/>
+        <list string="Pasos por Confirmado" js_class="legos18_confirma_list" editable="bottom" multi_edit="1">
+            <field name="lead_id" readonly="1" options="{'no_open': True}"/>
             <field name="partner_id"/>
-            <field name="user_id"/>
+            <field name="user_id" widget="many2one_avatar_user"/>
             <field name="referido"/>
             <field name="source_id"/>
-            <field name="fecha_entrada"/>
+            <field name="fecha_entrada" readonly="1"/>
             <field name="priority"/>
             <field name="active"/>
         </list>
